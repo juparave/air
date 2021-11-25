@@ -30,6 +30,7 @@ func (e *Engine) killCmd(cmd *exec.Cmd) (pid int, err error) {
 func (e *Engine) startCmd(cmd string) (*exec.Cmd, io.WriteCloser, io.ReadCloser, io.ReadCloser, error) {
 	c := exec.Command("/bin/sh", "-c", cmd)
 	// assign the child process a new PGID identical to its PID
+	// ref: https://medium.com/@felixge/killing-a-child-process-and-all-of-its-children-in-go-54079af94773
 	c.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	stderr, err := c.StderrPipe()
 	if err != nil {
