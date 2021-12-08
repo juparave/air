@@ -1,7 +1,6 @@
 package runner
 
 import (
-	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -74,7 +73,7 @@ func TestFileChecksum(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			f, err := ioutil.TempFile("", "")
+			f, err := os.CreateTemp("", "")
 			if err != nil {
 				t.Fatalf("couldn't create temp file for test: %v", err)
 			}
@@ -122,5 +121,18 @@ func TestChecksumMap(t *testing.T) {
 
 	if !m.updateFileChecksum("bar.txt", "123456") {
 		t.Errorf("expected no entry for bar.txt, but had one")
+	}
+}
+
+
+func TestAdaptToVariousPlatforms(t *testing.T){
+	config := &config{
+		Build: cfgBuild{
+			Bin: "tmp\\main.exe  -dev",
+		},
+	}
+	adaptToVariousPlatforms(config) 
+	if config.Build.Bin != "tmp\\main.exe  -dev"{
+		t.Errorf("expected '%s' but got '%s'",  "tmp\\main.exe  -dev", config.Build.Bin)
 	}
 }
